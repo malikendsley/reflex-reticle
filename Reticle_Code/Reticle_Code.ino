@@ -5,22 +5,6 @@
 
 Adafruit_SSD1306 display(-1);
 
-//this format allows easy manipulation of the image
-/*int const sightcorner[][12] PROGMEM = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1},
-  {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0},
-  {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-  {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-  };
-*/
-
 //dynamic objects (of which there is one) are created as simple arrays to support
 //transparency and drawing off the edge of the screen
 
@@ -64,8 +48,8 @@ const int8_t cguideR [] [47] = {
 
 };
 
+//outline of the sight
 const unsigned char reticle_outline [] PROGMEM = {
-  // 'GSS Edges, 128x64px
   0x00, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x80, 0x00,
   0x00, 0x3e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x78, 0x00,
   0x00, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x00,
@@ -145,30 +129,23 @@ void setup() {
   Serial.begin(9600);
   Serial.println("test");
 
-  // initialize with the I2C addr 0x3C
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-  display.clearDisplay();
+  initializeDisplay();
   //assemble and draw reticle
-
   display.drawBitmap(0, 0,  reticle_outline, 128, 64, WHITE);
-  display.display();
   drawReticle(centerX - 1, centerY + 1);
-  Serial.println("reticle drawn");
   display.display();
 
 }
-
 void loop() {
   //offset to make it central due to dimensions + even width and height
   drawReticle(centerX - 1, centerY + 1);
-  Serial.println("reticle drawn");
   display.display();
   delay(2000);
-
 }
-
 void initializeDisplay() {
-
+  // initialize with the I2C addr 0x3C
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  display.clearDisplay();
 }
 
 //draw an image stored as an int array instead of byte array
@@ -186,17 +163,19 @@ void drawReticle(int X, int Y) {
   //draw left guide
   for (int i = 0; i < 6; i++) {
     for (int j = 0; j < 47; j++) {
-      //prevent out of bounds drawing, and don't overwrite already written pixels
-      display.drawPixel(j + X - 61, i + Y - 1, cguideL[i][j]);
-
+      //prevent out of bounds drawing, and don't overwrite already written pixels (transparency)
+      if ( (j + X < DISPLAY_WIDTH) & (i + Y < DISPLAY_HEIGHT) & (!display.getPixel(j + X, i + Y)) ) {
+        display.drawPixel(j + X - 61, i + Y - 1, cguideL[i][j]);
+      }
     }
   }
   //draw right guide
-
   for (int i = 0; i < 6; i++) {
     for (int j = 0; j < 47; j++) {
-      //prevent out of bounds drawing, and don't overwrite already written pixels
-      display.drawPixel(j + X + 18, i + Y - 1, cguideR[i][j]);
+      //prevent out of bounds drawing, and don't overwrite already written pixels (transparency)
+      if ( (j + X < DISPLAY_WIDTH) & (i + Y < DISPLAY_HEIGHT) & (!display.getPixel(j + X, i + Y)) ) {
+        display.drawPixel(j + X + 18, i + Y - 1, cguideR[i][j]);
+      }
     }
   }
 }
