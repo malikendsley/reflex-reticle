@@ -25,7 +25,7 @@ Adafruit_SSD1306 display(-1);
 //transparency and drawing off the edge of the screen
 
 //stick of reticle
-const int cstick [][4] = {
+const int8_t cstick [][4] = {
   {0, 1, 1, 0},
   {1, 0, 0, 1},  {1, 0, 0, 1},  {1, 0, 0, 1},
   {1, 0, 0, 1},  {1, 0, 0, 1},  {1, 0, 0, 1},
@@ -36,21 +36,33 @@ const int cstick [][4] = {
   {0, 1, 1, 0},  {0, 1, 1, 0},  {0, 1, 1, 0},
   {0, 1, 1, 0},  {0, 1, 1, 0},  {0, 1, 1, 0},
   {0, 1, 1, 0},  {0, 1, 1, 0},  {0, 1, 1, 0},
+  {0, 1, 1, 0},  {0, 1, 1, 0},  {0, 1, 1, 0},
+  {0, 1, 1, 0},  {0, 1, 1, 0},  {0, 1, 1, 0},
   {0, 1, 1, 0},  {0, 1, 1, 0},  {0, 1, 1, 0}
 
 };
 
 //left and right guide of reticle
-const int cguide [][47] = {
-{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-{0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0,0,1},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}
+const int8_t cguideL [][47] = {
+  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+  {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1},
+  {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1},
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}
 
 };
+const int8_t cguideR [] [47] = {
 
+  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+  {1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+  {1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+  {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+  {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+  {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+  {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+
+};
 
 const unsigned char reticle_outline [] PROGMEM = {
   // 'GSS Edges, 128x64px
@@ -120,31 +132,35 @@ const unsigned char reticle_outline [] PROGMEM = {
   0x00, 0x07, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xc0, 0x00
 };
 
+//for centering purposes
 const int DISPLAY_WIDTH = 128;
 const int DISPLAY_HEIGHT = 64;
 
+//since the display is 128x64 this is the upper left pixel of the 2x2 square of center pixels
+int centerX = 63;
+int centerY = 31;
 
 void setup() {
 
-Serial.begin(9600);
+  Serial.begin(9600);
   Serial.println("test");
 
   // initialize with the I2C addr 0x3C
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   display.clearDisplay();
   //assemble and draw reticle
-  
+
   display.drawBitmap(0, 0,  reticle_outline, 128, 64, WHITE);
   display.display();
-drawReticle(62, 32);
+  drawReticle(centerX - 1, centerY + 1);
   Serial.println("reticle drawn");
   display.display();
 
 }
 
 void loop() {
-
-  drawReticle(62, 32);
+  //offset to make it central due to dimensions + even width and height
+  drawReticle(centerX - 1, centerY + 1);
   Serial.println("reticle drawn");
   display.display();
   delay(2000);
@@ -156,28 +172,33 @@ void initializeDisplay() {
 }
 
 //draw an image stored as an int array instead of byte array
-//if i run out of space, then use this, it might save some
-
 void drawReticle(int X, int Y) {
   //draw stick
-  for (int i = 0; i < 31; i++) {
+  for (int i = 0; i < 37; i++) {
     for (int j = 0; j < 4; j++) {
-
-      //prevent out of bounds drawing, and don't overwrite already written pixels
+      //prevent out of bounds drawing, and don't overwrite already written pixels (transparency)
+      if ( (j + X < DISPLAY_WIDTH) & (i + Y < DISPLAY_HEIGHT) & (!display.getPixel(j + X, i + Y)) ) {
         display.drawPixel(j + X, i + Y, cstick[i][j]);
-      
+      }
     }
   }
-  //draw left guide
-  for (int i = 0; i < 47; i++) {
-    for (int j = 0; j < 6; j++) {
 
+  //draw left guide
+  for (int i = 0; i < 6; i++) {
+    for (int j = 0; j < 47; j++) {
       //prevent out of bounds drawing, and don't overwrite already written pixels
-        display.drawPixel(j + X, i + Y, cguide[i][j]);
-      
+      display.drawPixel(j + X - 61, i + Y - 1, cguideL[i][j]);
+
     }
   }
   //draw right guide
+
+  for (int i = 0; i < 6; i++) {
+    for (int j = 0; j < 47; j++) {
+      //prevent out of bounds drawing, and don't overwrite already written pixels
+      display.drawPixel(j + X + 18, i + Y - 1, cguideR[i][j]);
+    }
+  }
 }
 
 long readVCC() {
