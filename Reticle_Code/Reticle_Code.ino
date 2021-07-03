@@ -25,7 +25,8 @@ Adafruit_SSD1306 display(-1);
 //transparency and drawing off the edge of the screen
 
 //stick of reticle
-const int cstick [31][4] PROGMEM = {{0, 1, 1, 0},
+const int cstick [][4] = {
+  {0, 1, 1, 0},
   {1, 0, 0, 1},  {1, 0, 0, 1},  {1, 0, 0, 1},
   {1, 0, 0, 1},  {1, 0, 0, 1},  {1, 0, 0, 1},
   {1, 0, 0, 1},  {1, 0, 0, 1},  {1, 0, 0, 1},
@@ -40,6 +41,15 @@ const int cstick [31][4] PROGMEM = {{0, 1, 1, 0},
 };
 
 //left and right guide of reticle
+const int cguide [][47] = {
+{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+{0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0,0,1},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}
+
+};
 
 
 const unsigned char reticle_outline [] PROGMEM = {
@@ -116,13 +126,18 @@ const int DISPLAY_HEIGHT = 64;
 
 void setup() {
 
+Serial.begin(9600);
+  Serial.println("test");
 
   // initialize with the I2C addr 0x3C
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   display.clearDisplay();
   //assemble and draw reticle
-
+  
   display.drawBitmap(0, 0,  reticle_outline, 128, 64, WHITE);
+  display.display();
+drawReticle(62, 32);
+  Serial.println("reticle drawn");
   display.display();
 
 }
@@ -130,7 +145,9 @@ void setup() {
 void loop() {
 
   drawReticle(62, 32);
+  Serial.println("reticle drawn");
   display.display();
+  delay(2000);
 
 }
 
@@ -145,13 +162,21 @@ void drawReticle(int X, int Y) {
   //draw stick
   for (int i = 0; i < 31; i++) {
     for (int j = 0; j < 4; j++) {
+
       //prevent out of bounds drawing, and don't overwrite already written pixels
-      if (i + Y < DISPLAY_HEIGHT & j + X < DISPLAY_WIDTH & !display.getPixel(j + X, i + Y) & cstick[i][j] == 1) {
-        display.drawPixel(j + X, i + Y, WHITE);
-      }
+        display.drawPixel(j + X, i + Y, cstick[i][j]);
+      
     }
   }
   //draw left guide
+  for (int i = 0; i < 47; i++) {
+    for (int j = 0; j < 6; j++) {
+
+      //prevent out of bounds drawing, and don't overwrite already written pixels
+        display.drawPixel(j + X, i + Y, cguide[i][j]);
+      
+    }
+  }
   //draw right guide
 }
 
