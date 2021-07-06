@@ -120,9 +120,15 @@ const unsigned char reticle_outline [] PROGMEM = {
 const int DISPLAY_WIDTH = 128;
 const int DISPLAY_HEIGHT = 64;
 
+
+
 //since the display is 128x64 this is the upper left pixel of the 2x2 square of center pixels
 int centerX = 63;
 int centerY = 31;
+//sensitivity
+//axis
+//various flags
+
 
 void setup() {
 
@@ -140,10 +146,13 @@ void loop() {
   //offset to make it central due to dimensions + even width and height
   drawReticle(centerX - 1, centerY + 1);
   display.display();
+  //temporary
   delay(2000);
+  //TODO: read inputs and adjust before next draw
+
 }
 void initializeDisplay() {
-  // initialize with the I2C addr 0x3C
+  //initialize with the I2C addr 0x3C
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   display.clearDisplay();
 }
@@ -180,6 +189,28 @@ void drawReticle(int X, int Y) {
   }
 }
 
+/*
+
+   processInputs(){
+   update each pin (bear in mind floating inputs, check pullup pulldown)
+   update delta flags
+   create data and use input + delta flags adjust centerX and centerY
+   maybe make button pins adjustable
+   }
+
+*/
+
+/*
+
+   calculateCenter(){
+   based on flags set earlier, make adjustments to core variables
+   new variable, axis (boolean) to denote either left right or up down
+   based on axis change centerX centerY
+   }
+
+*/
+
+//settings system? 3 buttons allows for menu navigation
 long readVCC() {
   long result;
   // Read 1.1V reference against AVcc
