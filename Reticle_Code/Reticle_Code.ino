@@ -37,8 +37,8 @@ const int8_t cguideL [][47] = {
 };
 const int8_t cguideR [] [47] = {
   {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-  {1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-  {1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+  {1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+  {1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
   {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
   {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
   {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -146,17 +146,18 @@ int LUBLastState = 0;
 
 int RDBState = 0;
 int RDBLastState = 0;
-
+bool USINGBUTTONS = false;
 
 
 void setup() {
 
   Serial.begin(9600);
   //setup pins
+  if(USINGBUTTONS){
   pinMode(axisButtonPin, INPUT);
   pinMode(leftUpButtonPin, INPUT);
   pinMode(rightDownButtonPin, INPUT);
-
+  }
   //setup and draw reticle
   initializeDisplay();
   display.drawBitmap(0, 0,  reticle_outline, 128, 64, WHITE);
@@ -167,6 +168,7 @@ void setup() {
 void loop() {
   
   //read current pin state
+  if(USINGBUTTONS){
   axisButtonState = digitalRead(axisButtonPin);
   LUBState = digitalRead(leftUpButtonPin);
   RDBState = digitalRead(rightDownButtonPin);
@@ -192,13 +194,14 @@ void loop() {
         centerY += sensitivity;
         }
     }
-
+  }
   
   //when drawing, offset to make it central due to dimensions + even width and height
+  display.clearDisplay();
   drawReticle(centerX - 1, centerY + 1);
   display.display();
   //temporary
-  delay(2000);
+  delay(500);
 
 }
 void initializeDisplay() {
