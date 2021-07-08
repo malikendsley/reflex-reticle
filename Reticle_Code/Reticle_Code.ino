@@ -23,7 +23,6 @@ const int8_t cstick [][4] = {
   {0, 1, 1, 0},  {0, 1, 1, 0},  {0, 1, 1, 0},
   {0, 1, 1, 0},  {0, 1, 1, 0},  {0, 1, 1, 0},
   {0, 1, 1, 0},  {0, 1, 1, 0},  {0, 1, 1, 0}
-
 };
 
 //left and right guide of reticle
@@ -35,11 +34,8 @@ const int8_t cguideL [][47] = {
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1}
-
-
 };
 const int8_t cguideR [] [47] = {
-
   {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
   {1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
   {1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
@@ -47,7 +43,6 @@ const int8_t cguideR [] [47] = {
   {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
   {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
   {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
 };
 
 //outline of the sight
@@ -122,35 +117,88 @@ const unsigned char reticle_outline [] PROGMEM = {
 const int DISPLAY_WIDTH = 128;
 const int DISPLAY_HEIGHT = 64;
 
-
-
 //since the display is 128x64 this is the upper left pixel of the 2x2 square of center pixels
 int centerX = 63;
 int centerY = 31;
-//sensitivity
-//axis
-//various flags
+
+//button related variables
+//how many pixels to shift per button press
+int sensitivity = 1;
+
+//two axes to swap between
+enum axis {
+  leftRight,
+  upDown
+};
+axis reticleAxis = leftRight;
+
+//pins to put buttons on
+int axisButtonPin = 1;
+int leftUpButtonPin = 10;
+int rightDownButtonPin = 11;
+
+//current and last states of each button pin
+int axisButtonState = 0;
+int axisButtonLastState = 0;
+
+int LUBState = 0;
+int LUBLastState = 0;
+
+int RDBState = 0;
+int RDBLastState = 0;
+
 
 
 void setup() {
 
   Serial.begin(9600);
-  Serial.println("test");
+  //setup pins
+  pinMode(axisButtonPin, INPUT);
+  pinMode(leftUpButtonPin, INPUT);
+  pinMode(rightDownButtonPin, INPUT);
 
+  //setup and draw reticle
   initializeDisplay();
-  //assemble and draw reticle
   display.drawBitmap(0, 0,  reticle_outline, 128, 64, WHITE);
   drawReticle(centerX - 1, centerY + 1);
   display.display();
 
 }
 void loop() {
-  //offset to make it central due to dimensions + even width and height
+  
+  //read current pin state
+  axisButtonState = digitalRead(axisButtonPin);
+  LUBState = digitalRead(leftUpButtonPin);
+  RDBState = digitalRead(rightDownButtonPin);
+
+  //if any of these are true the button has been pressed or released
+  if(axisButtonState != axisButtonLastState & axisButtonState == HIGH){
+    //check only for a pressed axis button and swap the axis accordingly
+      reticleAxis = (reticleAxis == upDown) ? leftRight : upDown;
+    }
+  if(LUBState != LUBLastState & LUBState == HIGH){
+      //change center of reticle based on axis, if left right go left, if updown go up
+      if(reticleAxis == leftRight){
+        centerX -= sensitivity;
+      } else {
+        centerY -= sensitivity;
+        }
+    }
+  if(RDBState != RDBLastState & RDBState == HIGH){
+      //change center of reticle based on axis, if left right go left, if updown go up
+      if(reticleAxis == leftRight){
+        centerX += sensitivity;
+      } else {
+        centerY += sensitivity;
+        }
+    }
+
+  
+  //when drawing, offset to make it central due to dimensions + even width and height
   drawReticle(centerX - 1, centerY + 1);
   display.display();
   //temporary
   delay(2000);
-  //TODO: read inputs and adjust before next draw
 
 }
 void initializeDisplay() {
@@ -191,37 +239,16 @@ void drawReticle(int X, int Y) {
   }
 }
 
-/*
-
-   processInputs(){
-   update each pin (bear in mind floating inputs, check pullup pulldown)
-   update delta flags
-   create data and use input + delta flags adjust centerX and centerY
-   maybe make button pins adjustable
-   }
-
-*/
-
-/*
-
-   calculateCenter(){
-   based on flags set earlier, make adjustments to core variables
-   new variable, axis (boolean) to denote either left right or up down
-   based on axis change centerX centerY
-   }
-
-*/
-
-//settings system? 3 buttons allows for menu navigation
-long readVCC() {
-  long result;
-  // Read 1.1V reference against AVcc
-  ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
-  delay(4); // Wait for Vref to settle
-  ADCSRA |= _BV(ADSC); // Convert
-  while (bit_is_set(ADCSRA, ADSC));
-  result = ADCL;
-  result |= ADCH << 8;
-  result = 1125300L / result; // Back-calculate AVcc in mV
-  return result;
-}
+////settings system? 3 buttons allows for menu navigation
+//long readVCC() {
+//  long result;
+//  // Read 1.1V reference against AVcc
+//  ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+//  delay(4); // Wait for Vref to settle
+//  ADCSRA |= _BV(ADSC); // Convert
+//  while (bit_is_set(ADCSRA, ADSC));
+//  result = ADCL;
+//  result |= ADCH << 8;
+//  result = 1125300L / result; // Back-calculate AVcc in mV
+//  return result;
+//}
