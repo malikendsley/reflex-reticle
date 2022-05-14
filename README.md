@@ -4,4 +4,4 @@ Code intended to control an Arduino (or Arduino adjacent) board to light up an O
 
 **This code is intended for use with OLED screens that are 128x64 and powered by SSD1306 over I2C/SPI**
 
-Idea based on this video, where the author created another gunsight but used gyro stabilization for theirs. Feel free to repurpose this code for your own aiming purposes. It was created with configurability in mind so users can change the pins, dimensions, and images it uses. Be sure to update the calibration numbers to make sure your new reticle is centered. 
+Idea based on [this](https://www.youtube.com/watch?v=TMBG8ANmtD4) video, where the author created another gunsight but used gyro stabilization for theirs. Feel free to repurpose this code for your own aiming purposes. It was created with configurability in mind so users can change the pins, dimensions, and images it uses. Be sure to update the calibration numbers to make sure your new reticle is centered. 
